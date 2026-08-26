@@ -232,5 +232,5 @@ augmented_directory/
 test/
 
 # model/ is redundant — model.zip is the deliverable (kept local, too large for git)
-./model/
+model/
 model.zip
