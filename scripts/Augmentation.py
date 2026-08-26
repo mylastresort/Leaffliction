@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-"""Part 2 — Data Augmentation
-Balance the dataset by augmenting minority classes with 6 techniques:
-Flip · Rotate · Skew · Shear · Crop · Distortion
-
-Usage:
-  ./Augmentation.py                 Balance the full dataset into augmented_directory/
-  ./Augmentation.py <image_path>    Display and save 6 augmentations for one image
-  ./Augmentation.py -h              Show this help message
-"""
-
 import sys
 from pathlib import Path
 
@@ -47,18 +36,9 @@ def main():
             print(f"  {f}")
         return
 
-    counts = loader.counts
     max_len = loader.majority_count
-    print("Class counts:")
-    for c, n in counts.items():
-        print(f"  {c:20s}  {n}  {'*' * (n // 30)}")
-    print(f"\nMajority = {max_len}, total = {loader.total}")
-
     sample_path = loader.images["Apple_healthy"][0]
     augmenter.preview_sample(sample_path)
-
-    for f in augmenter.save_augmentations(sample_path):
-        print(f)
 
     out = augmenter.balance_dataset(
         loader.images, max_len=max_len, out_dir=str(root / "augmented_directory")

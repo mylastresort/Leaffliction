@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 from src.data import LeafLoader
+import shutil
 
 
 class LeafAugmenter:
@@ -41,6 +42,15 @@ class LeafAugmenter:
     def balance_dataset(self, images, max_len=None, out_dir="augmented_directory"):
         """For each class, keep all originals + augment until count == majority."""
         out_dir = Path(out_dir)
+        if out_dir.exists():
+            answer = input(f"{out_dir} already exists. Empty it? [y/N]: ")
+            if answer.lower() == "y":
+                shutil.rmtree(out_dir)
+                out_dir.mkdir(parents=True)
+            else:
+                print("Keeping existing directory.")
+        else:
+            out_dir.mkdir(parents=True)
         t_list = list(self.TRANSFORMS.values())
         for cls, img_list in images.items():
             cls_dir = out_dir / cls
@@ -83,9 +93,17 @@ class LeafAugmenter:
     def show_balance_comparison(self, original_loader, balanced_loader):
         """Pie charts: original vs balanced dataset."""
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-        axes[0].pie(list(original_loader.counts.values()), labels=list(original_loader.images.keys()), autopct="%1.1f%%")
+        axes[0].pie(
+            list(original_loader.counts.values()),
+            labels=list(original_loader.images.keys()),
+            autopct="%1.1f%%",
+        )
         axes[0].set_title("Before augmentation")
-        axes[1].pie(list(balanced_loader.counts.values()), labels=list(balanced_loader.images.keys()), autopct="%1.1f%%")
+        axes[1].pie(
+            list(balanced_loader.counts.values()),
+            labels=list(balanced_loader.images.keys()),
+            autopct="%1.1f%%",
+        )
         axes[1].set_title("After augmentation (augmented_directory)")
         plt.suptitle("Distribution — before vs after augmentation", fontsize=14)
         plt.tight_layout()

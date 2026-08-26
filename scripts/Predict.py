@@ -46,7 +46,9 @@ def main():
         img_path = Path(args.image)
     else:
         test_image = root / "test" / "Unit_test1" / "Apple_healthy1.JPG"
-        img_path = test_image if test_image.exists() else loader.images["Apple_healthy"][0]
+        img_path = (
+            test_image if test_image.exists() else loader.images["Apple_healthy"][0]
+        )
         print(f"Using sample image: {img_path}")
 
     assert Path(img_path).exists(), f"Image not found: {img_path}"

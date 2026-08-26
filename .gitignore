@@ -234,3 +234,4 @@ test/
 # model/ is redundant — model.zip is the deliverable (kept local, too large for git)
 model/
 model.zip
+data/

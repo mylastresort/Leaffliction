@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-"""Part 4 — CNN Classification
-Balance via Part 2 · Train CNN · Evaluate with f1-score
-
-Usage:
-  ./Train.py                          Run full pipeline (balance, train, evaluate, save)
-  ./Train.py -h                       Show this help message
-  ./Train.py --train-dir <dir>        Use pre-balanced directory for training
-  ./Train.py --epochs <n>             Number of epochs (default: 100)
-  ./Train.py --target-acc <float>     Target accuracy (default: 0.90)
-  ./Train.py --patience <n>           Early stopping patience (default: 10)
-"""
-
 import sys
 import warnings
 from pathlib import Path
@@ -58,7 +45,9 @@ def main():
             loader = LeafLoader()
             augmenter = LeafAugmenter(loader=loader)
             print("Before:", loader.counts)
-            augmenter.balance_dataset(loader.images, max_len=loader.majority_count, out_dir=str(augmented_dir))
+            augmenter.balance_dataset(
+                loader.images, max_len=loader.majority_count, out_dir=str(augmented_dir)
+            )
             balanced = LeafLoader(data_path=augmented_dir)
             print("After:", balanced.counts)
         else:
@@ -66,7 +55,12 @@ def main():
 
     print(f"\nTraining CNN...")
     classifier = LeafClassifier()
-    classifier.train(train_dir=train_dir, epochs=args.epochs, target_acc=args.target_acc, patience=args.patience)
+    classifier.train(
+        train_dir=train_dir,
+        epochs=args.epochs,
+        target_acc=args.target_acc,
+        patience=args.patience,
+    )
 
     print("\nEvaluating...")
     val_ds = classifier.loader.load_datasets(train_dir)[1]
@@ -75,13 +69,19 @@ def main():
     model_dir = str(root / "model")
     classifier.save(out_dir=model_dir)
 
-    zip_path = classifier.zip_artifacts(train_dir=train_dir, model_dir=model_dir, out_zip=str(root / "model.zip"))
+    zip_path = classifier.zip_artifacts(
+        train_dir=train_dir, model_dir=model_dir, out_zip=str(root / "model.zip")
+    )
     classifier.sign(zip_path=zip_path, sig_file=str(root / "signature.txt"))
 
-    acc, details = classifier.test_on_images([root / "test" / d for d in ["Unit_test1", "Unit_test2"]])
+    acc, details = classifier.test_on_images(
+        [root / "test" / d for d in ["Unit_test1", "Unit_test2"]]
+    )
 
     if details:
-        classifier.show_predictions([root / "test" / d for d in ["Unit_test1", "Unit_test2"]], details, acc)
+        classifier.show_predictions(
+            [root / "test" / d for d in ["Unit_test1", "Unit_test2"]], details, acc
+        )
 
 
 if __name__ == "__main__":

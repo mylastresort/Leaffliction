@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plantcv.plantcv as pcv
 
-from src.data import IMAGE_EXTENSIONS, LeafLoader
+from src.data import LeafLoader
 
 
 class LeafTransformer:
@@ -38,11 +38,19 @@ class LeafTransformer:
         shape = {
             k: obs[k]["value"]
             for k in [
-                "area", "perimeter", "solidity", "convex_hull_area",
-                "longest_path", "ellipse_eccentricity", "width", "height",
+                "area",
+                "perimeter",
+                "solidity",
+                "convex_hull_area",
+                "longest_path",
+                "ellipse_eccentricity",
+                "width",
+                "height",
             ]
         }
-        shape["circularity"] = 4 * np.pi * shape["area"] / (shape["perimeter"] ** 2 + 1e-6)
+        shape["circularity"] = (
+            4 * np.pi * shape["area"] / (shape["perimeter"] ** 2 + 1e-6)
+        )
         shape["extent"] = shape["area"] / (shape["width"] * shape["height"])
 
         plm = pcv.homology.x_axis_pseudolandmarks(img=rgb, mask=mask, label="leaf")
@@ -52,7 +60,9 @@ class LeafTransformer:
                 cv2.circle(plm_vis, (int(pt[0][0]), int(pt[0][1])), 3, (255, 0, 0), -1)
 
         pcv.outputs.clear()
-        pcv.analyze.color(rgb_img=rgb, labeled_mask=lbl, n_labels=n_lbl, colorspaces="hsv")
+        pcv.analyze.color(
+            rgb_img=rgb, labeled_mask=lbl, n_labels=n_lbl, colorspaces="hsv"
+        )
         obs = pcv.outputs.observations["default_1"]
         hue_h = np.array(obs["hue_frequencies"]["value"])
         sat_h = np.array(obs["saturation_frequencies"]["value"])
@@ -88,7 +98,9 @@ class LeafTransformer:
             ax.axis("off")
         axes[1, 2].bar(range(len(results["hue_h"])), results["hue_h"], color="salmon")
         axes[1, 2].set_title("T6a: Hue")
-        axes[1, 3].bar(range(len(results["sat_h"])), results["sat_h"], color="dodgerblue")
+        axes[1, 3].bar(
+            range(len(results["sat_h"])), results["sat_h"], color="dodgerblue"
+        )
         axes[1, 3].set_title("T6b: Saturation")
         plt.suptitle("Part 3 — Image Transformations", fontsize=15)
         plt.tight_layout()
@@ -108,9 +120,15 @@ class LeafTransformer:
         files = {
             "Gaussian_Blur": results["blurred"],
             "Mask": results["mask"],
-            "ROI_Objects": cv2.cvtColor(results["roi_vis"], cv2.COLOR_RGB2BGR) if len(results["roi_vis"].shape) == 3 else results["roi_vis"],
-            "Analyze_Object": cv2.cvtColor(results["masked"], cv2.COLOR_RGB2BGR) if len(results["masked"].shape) == 3 else results["masked"],
-            "Pseudolandmarks": cv2.cvtColor(results["plm_vis"], cv2.COLOR_RGB2BGR) if len(results["plm_vis"].shape) == 3 else results["plm_vis"],
+            "ROI_Objects": cv2.cvtColor(results["roi_vis"], cv2.COLOR_RGB2BGR)
+            if len(results["roi_vis"].shape) == 3
+            else results["roi_vis"],
+            "Analyze_Object": cv2.cvtColor(results["masked"], cv2.COLOR_RGB2BGR)
+            if len(results["masked"].shape) == 3
+            else results["masked"],
+            "Pseudolandmarks": cv2.cvtColor(results["plm_vis"], cv2.COLOR_RGB2BGR)
+            if len(results["plm_vis"].shape) == 3
+            else results["plm_vis"],
         }
         for name, img_arr in files.items():
             cv2.imwrite(str(dst_dir / f"{stem}_{name}{ext}"), img_arr)
@@ -120,7 +138,7 @@ class LeafTransformer:
         src_dir = Path(src_dir)
         dst_dir = Path(dst_dir)
         dst_dir.mkdir(parents=True, exist_ok=True)
-        images = [f for f in src_dir.iterdir() if f.is_file() and f.suffix in IMAGE_EXTENSIONS]
+        images = [f for f in src_dir.iterdir() if f.is_file()]
         print(f"Processing {len(images)} images from {src_dir} -> {dst_dir}")
         for img_path in sorted(images):
             try:

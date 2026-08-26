@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""Part 1 — Distribution
-Analyze the dataset and display pie charts and bar charts for each plant type.
-Also verifies the augmented_directory balance after Part 2.
-"""
-
 import sys
 from pathlib import Path
 
@@ -26,7 +20,6 @@ def main():
         print(HELP_TEXT)
         return
 
-    root = Path(__file__).resolve().parent.parent
     dataset = LeafLoader()
 
     print("Class counts:")
@@ -35,18 +28,6 @@ def main():
     print(f"\nMajority = {dataset.majority_count}, total = {dataset.total}")
 
     dataset.show_distribution(title="Original dataset")
-
-    augmented_dir = root / "augmented_directory"
-    if augmented_dir.exists():
-        aug = LeafLoader(data_path=augmented_dir)
-        print("augmented_directory class counts:")
-        for c, n in aug.counts.items():
-            print(f"  {c:20s}  {n}")
-        print(f"\nAll equal: {len(set(aug.counts.values())) == 1}")
-        dataset.compare_distribution(aug)
-    else:
-        print(f"\naugmented_directory not found at {augmented_dir}")
-        print("Run Augmentation.py first to generate it.")
 
 
 if __name__ == "__main__":

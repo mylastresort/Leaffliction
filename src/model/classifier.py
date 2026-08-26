@@ -23,8 +23,8 @@ OPTIMIZERS = {
 
 
 class LeafClassifier:
-    def __init__(self, loader=None):
-        self.loader = loader or LeafLoader()
+    def __init__(self, loader=None, max_images=None):
+        self.loader = loader or LeafLoader(max_images=max_images)
         self.model = None
         self.base = None
 
@@ -57,17 +57,17 @@ class LeafClassifier:
     def train(self, train_dir, val_dir=None, epochs=10, target_acc=TARGET_ACC,
               patience=PATIENCE, batch_size=32, dropout=0.2, dense_units=128,
               lr=0.001, optimizer="adam"):
-        train_ds, val_ds = self.loader.load_datasets(train_dir, val_dir, batch_size=batch_size)
-        num_classes = len(train_ds.class_names)
+        train_ds, val_ds, test_ds, classnames = self.loader.load_datasets(train_dir, val_dir, batch_size=batch_size)
+        num_classes = len(classnames)
 
         self.build_model(num_classes, dropout=dropout, dense_units=dense_units, lr=lr, optimizer=optimizer)
 
-        print(f"Classes ({num_classes}): {train_ds.class_names}")
+        print(f"Classes ({num_classes}): {classnames}")
         history = self.model.fit(
             train_ds, epochs=epochs, validation_data=val_ds,
-            callbacks=[PerClassF1EarlyStopping(val_ds, train_ds.class_names, target=target_acc, patience=patience)],
+            callbacks=[PerClassF1EarlyStopping(val_ds, classnames, target=target_acc, patience=patience)],
         )
-        return self.model, history, train_ds, val_ds, train_ds.class_names
+        return self.model, history, train_ds, val_ds, test_ds, classnames
 
     def evaluate(self, val_ds, class_names=None):
         class_names = class_names or self.loader.class_names
