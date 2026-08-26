@@ -222,3 +222,15 @@ __marimo__/
 
 data/leaves.zip
 data/leaves
+
+docs/Intra Projects Leaffliction Edit.pdf
+docs/Leaffliction.pdf
+
+# augmented_directory and test are generated/downloaded at runtime
+# Keep them untracked but available for evaluation
+augmented_directory/
+test/
+
+# model/ is redundant — model.zip is the deliverable (kept local, too large for git)
+./model/
+model.zip
