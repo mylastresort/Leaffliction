@@ -18,7 +18,7 @@ notebooks/
   04_part.ipynb       Part 4: Train — CNN training + evaluation (demo)
   05_predict.ipynb    Part 4: Predict — classify a leaf image (demo)
 src/
-  data.py             Dataset paths and class definitions
+  data.py             Dataset paths, class definitions, and load_datasets (train/val/test splits)
   augmentation.py     6 augmentation transforms (Flip, Rotate, Skew, Shear, Crop, Distortion)
   features.py         Hand-crafted feature extraction (PlantCV)
   model/
@@ -39,8 +39,9 @@ signature.txt         SHA1 hash of model.zip
 2. **Part 2** — Run `Augmentation.py`: generates 6 augmentations, balances into `augmented_directory/`
 3. **Part 1 (verify)** — Run `Distribution.py` again: re-runs Distribution on `augmented_directory/` to confirm equal pie slices
 4. **Part 3** — Run `Transformation.py`: shows 6 PlantCV transformations (blur, mask, ROI, analyze, pseudolandmarks, color histogram)
-5. **Part 4 (train)** — Run `Train.py`: trains ResNet50, evaluates >90% accuracy, saves `model.zip`
-6. **Part 4 (predict)** — Run `Predict.py`: loads model, shows original + transformed image + disease classification
+5. **Part 4 (train)** — Run `Train.py`: trains ResNet50, evaluates >90% accuracy, saves `model.zip`. A test split is held out by `load_datasets` (returned as `test_ds`) and never seen during training
+6. **Part 4 (evaluate)** — Evaluate on the held-out test split (unseen from training) alongside the `test/Unit_test1` and `test/Unit_test2` images
+7. **Part 4 (predict)** — Run `Predict.py`: loads model, shows original + transformed image + disease classification
 
 ## Requirements
 

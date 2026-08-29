@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+"""Part 4 — Train
+Balance (Part 2) + train ResNet50 CNN, evaluate, save artifacts.
+"""
+
 import sys
 import warnings
 from pathlib import Path
@@ -55,16 +60,18 @@ def main():
 
     print(f"\nTraining CNN...")
     classifier = LeafClassifier()
-    classifier.train(
+    _, _, _, val_ds, test_ds, _ = classifier.train(
         train_dir=train_dir,
         epochs=args.epochs,
         target_acc=args.target_acc,
         patience=args.patience,
     )
 
-    print("\nEvaluating...")
-    val_ds = classifier.loader.load_datasets(train_dir)[1]
+    print("\nEvaluating validation split...")
     classifier.evaluate(val_ds)
+
+    print("\nEvaluating held-out test split (returned from load_datasets, unseen from training)...")
+    classifier.evaluate(test_ds)
 
     model_dir = str(root / "model")
     classifier.save(out_dir=model_dir)

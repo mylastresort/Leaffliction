@@ -41,7 +41,13 @@ class LeafLoader:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return cv2.resize(img, size)
 
-    def load_datasets(self, train_dir, val_dir=None, batch_size=32):
+    def load_datasets(self, train_dir, val_dir=None, batch_size=32, test_split=0.1):
+        """Split train_dir into train/val/test datasets.
+
+        val is 20% of train_dir (validation_split); test_split (default 0.1)
+        of the remaining train pool is held out and returned as test_ds, so it
+        is never seen by training.
+        """
         common = dict(seed=self.seed, image_size=self.img_size, batch_size=batch_size)
         if val_dir:
             train_ds = image_dataset_from_directory(train_dir, **common)
@@ -54,8 +60,9 @@ class LeafLoader:
         classnames = train_ds.class_names
         n = cardinality(train_ds).numpy()
 
-        train_ds = train_ds.take(int(n * 0.9))
-        test_ds = train_ds.skip(int(n * 0.9))
+        n_test = int(n * test_split)
+        test_ds = train_ds.take(n_test)
+        train_ds = train_ds.skip(n_test)
         return train_ds, val_ds, test_ds, classnames
 
     @property

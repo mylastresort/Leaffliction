@@ -11,11 +11,11 @@ import shutil
 class LeafAugmenter:
     TRANSFORMS = {
         "Flip": A.HorizontalFlip(p=1.0),
-        "Rotate": A.Rotate(limit=45, p=1.0),
-        "Skew": A.Perspective(scale=(0.1, 0.15), p=1.0),
-        "Shear": A.Affine(shear=(-20, 20), p=1.0),
-        "Crop": A.RandomResizedCrop(size=(224, 224), scale=(0.7, 0.9), p=1.0),
-        "Distortion": A.OpticalDistortion(distort_limit=0.15, p=1.0),
+        "Rotate": A.Rotate(limit=90, p=1.0),
+        "Skew": A.Perspective(scale=(0.2, 0.25), p=1.0),
+        "Shear": A.Affine(shear=(-10, 40), p=1.0),
+        "Crop": A.RandomResizedCrop(size=(124, 324), scale=(0.5, 0.9), p=1.0),
+        "Distortion": A.OpticalDistortion(distort_limit=0.25, p=1.0),
     }
 
     def __init__(self, loader=None):

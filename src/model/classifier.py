@@ -58,6 +58,7 @@ class LeafClassifier:
               patience=PATIENCE, batch_size=32, dropout=0.2, dense_units=128,
               lr=0.001, optimizer="adam"):
         train_ds, val_ds, test_ds, classnames = self.loader.load_datasets(train_dir, val_dir, batch_size=batch_size)
+        self.loader.classes = {name: name for name in classnames}
         num_classes = len(classnames)
 
         self.build_model(num_classes, dropout=dropout, dense_units=dense_units, lr=lr, optimizer=optimizer)
