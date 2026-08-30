@@ -35,18 +35,8 @@ def main():
         for f in augmenter.save_augmentations(img_path):
             print(f"  {f}")
         return
-
-    max_len = loader.majority_count
-    sample_path = loader.images["Apple_healthy"][0]
-    augmenter.preview_sample(sample_path)
-
-    out = augmenter.balance_dataset(
-        loader.images, max_len=max_len, out_dir=str(root / "augmented_directory")
-    )
-    print(f"Saved to {out}")
-
-    balanced = LeafLoader(data_path=root / "augmented_directory")
-    augmenter.show_balance_comparison(loader, balanced)
+    else:
+        exit("No image provided. Use -h for help.")
 
 
 if __name__ == "__main__":

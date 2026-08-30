@@ -43,17 +43,30 @@ signature.txt         SHA1 hash of model.zip
 6. **Part 4 (evaluate)** — Evaluate on the held-out test split (unseen from training) alongside the `test/Unit_test1` and `test/Unit_test2` images
 7. **Part 4 (predict)** — Run `Predict.py`: loads model, shows original + transformed image + disease classification
 
-## Requirements
+## Setup
+
+Dependencies are managed with **conda** only (no pip/uv). `environment.yml` is the single source of truth.
+
+```bash
+# Create the environment from environment.yml
+conda env create -f environment.yml -n leaffliction
+conda activate leaffliction
+
+# Update all dependencies from environment.yml
+conda env update -f environment.yml -n leaffliction
+
+# Install a single package (conda resolves from conda-forge)
+conda install <package>
+```
 
 - Python >= 3.11
-- Dependencies: tensorflow, keras, albumentations, plantcv, opencv-python, matplotlib, scikit-learn, pillow
+- `tensorflow=2.21` with CUDA support is available on conda-forge for Linux/py311 (`cuda129`/`cuda130` builds)
+- To regenerate a full pinned snapshot of the current env: `conda env export --no-builds > environment.yml`
+- For a clean conda-forge rebuild (e.g. replacing pip-installed deps): `conda env create -f environment.yml -n leaffliction --force`
 
 ## Usage
 
 ```bash
-# Install dependencies
-pip install -e .
-
 # Part 1 — Distribution analysis
 python scripts/Distribution.py
 

@@ -173,13 +173,17 @@ class LeafClassifier:
         return self
 
     def zip_artifacts(self, train_dir, model_dir, out_zip="model.zip"):
+        def walk_and_add(base_dir):
+            base = Path(base_dir)
+            for root, _, files in os.walk(base):
+                for f in files:
+                    full = os.path.join(root, f)
+                    arcname = Path(full).relative_to(base.parent)
+                    zf.write(full, arcname)
+
         with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_DEFLATED) as zf:
-            for root, _, files in os.walk(model_dir):
-                for f in files:
-                    zf.write(os.path.join(root, f))
-            for root, _, files in os.walk(train_dir):
-                for f in files:
-                    zf.write(os.path.join(root, f))
+            walk_and_add(model_dir)
+            walk_and_add(train_dir)
         print(f"Zipped → {out_zip}")
         return out_zip
 
